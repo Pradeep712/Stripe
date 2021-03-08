@@ -1,0 +1,63 @@
+const express = require('express') 
+const bodyParser = require('body-parser')
+const path = require('path')
+const app = express()
+
+const Publishable_Key  ='pk_test_51ISM9AIdTLEn0ARbqTihYwIrTBR5o9jEe7WZ7EXmJHmzrODanlQYj1ApHUq8zBEGXGEpOumcIIYaBsumYPyL2jiP00exmMkHLf'
+const Secret_Key = 'sk_test_51ISM9AIdTLEn0ARbnvH47VX5GCOSzgkKa8WvuqlJ1ZpPbOqHCeGiIwLzop9rt21dCq1UUIody2ocg7ZZydr5OvLf00muskho6v'
+console.log(Publishable_Key,Secret_Key)
+//For Payment
+const stripe = require('stripe')(Secret_Key)
+const port = process.env.PORT || 3000
+
+//Implements bodyParser Middleware
+app.use(bodyParser.urlencoded({ extended: false }))
+app.use(bodyParser.json())    
+
+// View Engine Setup 
+app.set('views', path.join(__dirname, 'views')) 
+app.set('view engine', 'ejs')
+
+//get Stripe paymentDetails
+app.get('/', (req, res) => {
+    res.render('Home', {
+        key: Publishable_Key 
+    })
+})
+
+//For retriving customer details doing payment
+app.post('/payment', (req, res) => {
+    stripe.customers.create({
+        email: req.body.stripeEmail,
+        source: req.body.stripeToken,
+        name: 'Pradeep',
+        address: {
+            line1: '2 Kannanendhal',
+            postal_code: '625 007',
+            city: 'Madurai',
+            state: 'Tamil Nadu',
+            country: 'India',
+        }
+    })
+        .then((customer) => { // Customer payment amount
+            return stripe.charges.create({
+                amount: 7000,
+                description: 'Web development Product',
+                currency: 'USD',
+                customer: customer.id
+            });
+        })
+        .then((charge) => { //After Payment, Charges 
+            console.log(charge);
+            res.send("Payment Success")
+        })
+        .catch((err) => { // Error during Payment
+            console.log(err);
+            res.send(err)
+        });
+})
+
+app.listen(port, (err) => {
+    if (err)    throw err;
+    console.log(`App is running in port ${port}`)
+})
