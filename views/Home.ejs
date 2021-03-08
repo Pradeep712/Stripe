@@ -1,14 +1,15 @@
 <!DOCTYPE html> 
 <html> 
-<title>Stripe Payment Demo</title> 
+<title>Stripe Payment</title> 
 <body> 
     <h3>Welcome to Payment Gateway</h3> 
     <form action="payment" method="POST"> 
-    <script
-        src="//checkout.stripe.com/v2/checkout.js"
+    <!--Attribute src is a template for Payment from stripe & 
+        data-amount calculates money value in Paise to Rupee -->
+    <script src="//checkout.stripe.com/v2/checkout.js"
         class="stripe-button"
         data-key="<%= key %>" 
-        data-amount="1000" 
+        data-amount="50000" 
         data-currency="inr" 
         data-name="Pradeep R" 
         data-description="Third Party Payment Service" 

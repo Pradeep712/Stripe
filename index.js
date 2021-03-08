@@ -13,7 +13,7 @@ var secret_Key = process.env.SECRET_KEY
 const stripe = require('stripe')(secret_Key)
 const port = process.env.PORT || 3000
 
-//Implements bodyParser Middleware
+//Implements bodyParser Middleware for processing Customer info like stripeEmail
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())    
 
